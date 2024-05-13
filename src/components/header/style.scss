@@ -1,0 +1,63 @@
+@import './../../globals/mixins.scss';
+
+.header {
+    width: 100%;
+    height: 75px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    .container {
+        max-width: 1000px;
+        width: 100%;
+
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo {
+        @include mPadding($onlyHorizontal: false);
+        box-sizing: border-box;
+
+        .inner {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 26px;
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+    }
+
+    .navigation {
+        @include mPadding($onlyHorizontal: false);
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 35px;
+
+        > div {
+            font-family: Poppins, 'Inter', sans-serif;
+            font-size: 16px;
+
+            cursor: pointer;
+
+            * {
+                color: black;
+                text-decoration: none;
+            }
+
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+    }
+}
