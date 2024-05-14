@@ -32,8 +32,8 @@ function Login() {
         const response = await axios.post(
             'http://192.168.122.101:8000/api/v1/login/',
             {
-                username: login,
-                password: password
+              username: login,
+              password: password
             }
         );
         // Check if response.data exists
