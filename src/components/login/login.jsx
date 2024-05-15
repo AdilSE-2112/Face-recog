@@ -2,19 +2,25 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./login.scss";
+import { useAuth } from "../../context/authContext";
 
 function Login() {
   const navigate = useNavigate();
+
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [errorDisplay, setErrorDisplay] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const { loginAction } = useAuth();
+
   useEffect(() => {
+
     setTimeout(() => {
       setErrorDisplay(false);
     }, 5000);
+
   }, [errorDisplay == true]);
 
   const togglePasswordVisibility = () => {
@@ -30,20 +36,19 @@ function Login() {
   const handleLogin = async () => {
     try {
         const response = await axios.post(
-            'http://192.168.122.101:8000/api/v1/login/',
-            {
-              username: login,
-              password: password
-            }
+          'http://192.168.122.101:8000/api/v1/login/',
+          {
+            username: login,
+            password: password
+          }
         );
         // Check if response.data exists
         if (response.data) {
             // Handle successful login here, e.g., redirect to another page
             console.log(response.data);
+            loginAction(response.data);
             navigate("/"); // Redirect to "/" after successful login
         } else {
-            // Handle error: response data is undefined
-            console.error('Error during login: Response data is undefined');
             setErrorDisplay(true);
             setErrorMessage('Failed to login. Please check your credentials.');
         }

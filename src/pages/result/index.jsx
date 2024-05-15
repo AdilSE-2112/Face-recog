@@ -44,7 +44,7 @@ function Result() {
     useEffect(() => {
         const data = new FormData();
         data.append('image', file);
-        data.append('limit', 3);
+        data.append('limit', 10);
         data.append('auth_user_id', 2);
 
         axios.post(

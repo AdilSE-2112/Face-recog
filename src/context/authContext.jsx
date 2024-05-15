@@ -15,26 +15,10 @@ const AuthProvider = ({ children }) => {
     }, []);
 
     const loginAction = async (data) => {
-        try {
-            // const response = await fetch("your-api-endpoint/auth/login", {
-            //   method: "POST",
-            //   headers: {
-            //     "Content-Type": "application/json",
-            //   },
-            //   body: JSON.stringify(data),
-            // });
-            // const res = await response.json();
-            // if (res.data) {
-            //   setUser(res.data.user);
-            //   setToken(res.token);
-            //   localStorage.setItem("site", res.token);
-            //   navigate("/dashboard");
-            //   return;
-            // }
-            throw new Error("CUSTOM ERROR. FROM AUTHCONTEXT");
-          } catch (err) {
-            console.error(err);
-          }
+        setToken(data.access);
+
+        localStorage.setItem("jwtToken", data.access);
+        localStorage.setItem("auth_user_id", data.auth_user_id);
     }
 
     const logOut = (data) => {
