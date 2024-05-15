@@ -8,6 +8,7 @@ import mockPhoto from "../home/1000.jpg";
 import { MdRepeatOn } from "react-icons/md";
 
 const HistoryPage  = () => {
+    //Мына жерин жазып тастайсынго атакто уже уйге ухожу 
   const navigate = useNavigate();
 
   return (
