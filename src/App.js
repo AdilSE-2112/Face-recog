@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SearchProvider from './context/searchContext';
 import Result from './pages/result';
 import Login from './components/login/login'
+import History from './pages/history/index'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path='/login' element={<Login />} />
               <Route path='/search/result' element={<Result />} />
+              <Route path="/history" element={<History />} />
             </Routes>
           </SearchProvider>
         </AuthProvider>
