@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import Layout from '../../components/layout';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Layout from "../../components/layout";
+import { useNavigate } from "react-router-dom";
 
-import './style.scss';
-import { useSearch } from '../../context/searchContext';
+import "./style.scss";
+import { useSearch } from "../../context/searchContext";
 
-import mockPhoto from './1000.jpg';
+import mockPhoto from "./1000.jpg";
 
 import { FiUpload } from "react-icons/fi";
+import { FaCheckCircle } from "react-icons/fa";
+
 import { HiDotsVertical } from "react-icons/hi";
 import axios from 'axios';
 import { useAuth } from '../../context/authContext';
 
 function Home() {
-    const searchContext = useSearch();
-    const navigate = useNavigate();
+  const searchContext = useSearch();
+  const navigate = useNavigate();
 
     const [file, setFile] = useState(null);
     const [iin, setIIN] = useState('');
@@ -94,70 +96,70 @@ function Home() {
                             </div>
                         </div>
 
-                        <div className="search-input">
-                            <div className="file-input">
-                                {
-                                    // file != null 
-                                        // ? <img src={URL.createObjectURL(file)} />
-                                        // : (
-                                            <>
-                                            <input 
-                                                type="file" 
-                                                accept="image/png, image/jpeg"
-                                                onChange={e => {
-                                                    console.log("File")
-                                                    setFile(e.target.files[0]);
-                                                }}
-                                            />
-                                            <div>
-                                                <FiUpload className='icon'/>
-                                                <p>
-                                                    { 
-                                                        file === null 
-                                                            ? 'Загрузите или выберите изображение для поиска'
-                                                            : 'Изображение выбрано '
-                                                    }
-                                                </p>
-                                            </div>
-                                            </>
-                                        // )
-                                }
-                            </div>
+          <div className="search-input">
+            
+            <div className="file-input">
+              {
+                // file != null
+                // ? <img src={URL.createObjectURL(file)} />
+                // : (
+                <>
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={(e) => {
+                      console.log("File");
+                      setFile(e.target.files[0]);
+                    }}
+                  />
+                  <div>
+                    {file === null ? (
+                      <FiUpload className="icon" />
+                    ) : (
+                      <FaCheckCircle className="icon check-icon" />
+                    )}
 
-                            <div className="iin-input">
-                                <div>
-                                    <input 
-                                        type="text" 
-                                        placeholder='Введите иин'
-                                        onChange={(e) => setIIN(e.target.value)}
-                                        value={iin}
-                                    />
-                                    <button
-                                        onClick={(e) => handleSearch()}
-                                    >Поиск</button>
-                                </div>
-                                <div>
-                                    <div>
-                                        <p>Имя:</p>
-                                        <p>Маку</p>
-                                    </div>
-                                    <div>
-                                        <p>Фамилия:</p>
-                                        <p>Куанышбеков</p>
-                                    </div>
-                                    <div>
-                                        <p>День рождение:</p>
-                                        <p>01.01.1990г</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <p>
+                      {file === null
+                        ? "Загрузите или выберите изображение для поиска"
+                        : "Изображение выбрано "}
+                    </p>
+                  </div>
+                </>
+                // )
+              }
             </div>
 
-        </Layout>
-    );
+            <div className="iin-input">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Введите иин"
+                  onChange={(e) => setIIN(e.target.value)}
+                  value={iin}
+                />
+                <button onClick={(e) => handleSearch()}>Поиск</button>
+              </div>
+              <div>
+                <div>
+                  <p>Имя:</p>
+                  <p>Маку</p>
+                </div>
+                <div>
+                  <p>Фамилия:</p>
+                  <p>Куанышбеков</p>
+                </div>
+                <div>
+                  <p>День рождение:</p>
+                  <p>01.01.1990г</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 }
 
 const Search_Card = ({ history }) => {
@@ -201,8 +203,8 @@ const Search_Card = ({ history }) => {
             {/* <div>
                 <p>{date}</p>
             </div> */}
-        </div>
-    )
-}
+    </div>
+  );
+};
 
 export default Home;

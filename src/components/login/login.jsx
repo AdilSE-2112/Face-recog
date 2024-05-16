@@ -90,7 +90,7 @@ function Login() {
         </div>
         <div className="login-form-block">
           <div className="header">
-            <h1 className="login">Логин</h1>
+            <h1 className="login">FaceRecognition</h1>
           </div>
           <div className="body">
             <div className="input-line">

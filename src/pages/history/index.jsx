@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useSearch } from "../../context/searchContext";
 import Layout from "../../components/layout";
 import "./style.scss";
 import { HiDotsVertical } from "react-icons/hi";
 import mockPhoto from "../home/1000.jpg";
 import { MdRepeatOn } from "react-icons/md";
 
-const HistoryPage  = () => {
-    //Мына жерин жазып тастайсынго атакто уже уйге ухожу 
+
+const HistoryPage = () => {
+  const searchContext = useSearch();
   const navigate = useNavigate();
+
+  const handleRepeatSearch = (file, iin) => {
+    searchContext.setFile(file);
+    searchContext.setIIN(iin);
+    navigate("/search/result");
+  };
 
   return (
     <Layout>
@@ -18,15 +25,14 @@ const HistoryPage  = () => {
           <div className="prev-requests">
             <div className="title">История запросов</div>
             <div className="cards">
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
-              <Search_Card photo={mockPhoto} date={"25.04.24"} />
+              {[...Array(8)].map((_, index) => (
+                <SearchCard
+                  key={index}
+                  photo={mockPhoto}
+                  date={"25.04.24"}
+                  onRepeatSearch={handleRepeatSearch}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -34,20 +40,24 @@ const HistoryPage  = () => {
     </Layout>
   );
 };
-const Search_Card = ({ photo, date }) => {
-  const [infoOpen, setInfoOpen] = useState(false);
-  const navigate = useNavigate();
-  const handleRepeatSearch = () => {
 
-    navigate("/search/result");
+const SearchCard = ({ photo, date, onRepeatSearch }) => {
+  const [infoOpen, setInfoOpen] = useState(false);
+
+  const handleRepeatSearchClick = () => {
+    const mockIIN = "123456789012"; 
+    // console.log("File:", mockPhoto);
+    console.log("IIN:", mockIIN);
+    onRepeatSearch(mockPhoto, mockIIN);
   };
+
   return (
     <div className="card">
       <img src={photo} alt={date} />
       <div className="info-block">
         <HiDotsVertical
           className="hiDotsicon"
-          onClick={(e) => setInfoOpen((prev) => !prev)}
+          onClick={() => setInfoOpen((prev) => !prev)}
         />
         {infoOpen ? (
           <div className="info">
@@ -58,15 +68,10 @@ const Search_Card = ({ photo, date }) => {
         ) : null}
       </div>
       <div className="repeat-block">
-        <MdRepeatOn
-          className="repeatIcon"
-          onClick={(e) => handleRepeatSearch()}
-        />
+        <MdRepeatOn className="repeatIcon" onClick={handleRepeatSearchClick} />
       </div>
-      {/* <div>
-                <p>{date}</p>
-            </div> */}
     </div>
   );
 };
-export default HistoryPage ;
+
+export default HistoryPage;
