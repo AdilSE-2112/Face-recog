@@ -12,9 +12,10 @@ import { FaAnglesRight } from "react-icons/fa6";
 import axios from 'axios';
 
 function Result() {
-    const { iin, file } = useSearch();
+    const { iin, file, lastRequest } = useSearch();
 
     const [isLoading, setLoading] = useState(true);
+    const [didSearch, setSearched] = useState(false);
 
     const canvasRef = useRef(null);
     const [ctx, setCTX] = useState(null);
@@ -27,7 +28,7 @@ function Result() {
     const [mouseXpos, setMouseXpos] = useState(null);
     const [mouseYpos, setMouseYpos] = useState(null);
 
-    const [results, setResults] = useState(null);
+    const [results, setResults] = useState(lastRequest);
     const [boxes, setBoxes] = useState({});
 
     const [scaleX, setScaleX] = useState(1);
@@ -42,27 +43,10 @@ function Result() {
     });
 
     useEffect(() => {
-        const data = new FormData();
-        data.append('image', file);
-        data.append('limit', 10);
-        data.append('auth_user_id', 2);
 
-        axios.post(
-            'http://192.168.122.101:8000/api/v1/search/', 
-            data,
-            {},
-        ).then((response) => {
-            setResults(response.data);
-            console.log(response.data);
-            setLoading(false);
-        }).catch((error) => {
-            console.log(error);
-            // setResults(mock);
-            setLoading(false);
-        })
-    }, [])
+        if (!file || !results) return;
+        setLoading(false);
 
-    useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         setCTX(ctx);
@@ -93,7 +77,7 @@ function Result() {
 
             redrawCanvas();
         }
-    }, [scaleX, scaleY, isLoading, file, results, currentSubjectIndex, mouseXpos, mouseYpos]);
+    }, [file, results, scaleX, scaleY, isLoading, currentSubjectIndex]);
 
     const redrawCanvas = () => {
         if (ctx === null || isLoading || results === null) return;
@@ -119,15 +103,6 @@ function Result() {
             saveBoxes(item.bbox, item.milvus_results, index);
             drawFace(item.bbox, index, ctx);
         });
-
-        // // Draw green circle at mouse position
-        // if (typeof mouseXpos !== 'undefined' && typeof mouseYpos !== 'undefined') {
-        //     ctx.beginPath();
-        //     ctx.arc(mouseXpos, mouseYpos, 10, 0, 2 * Math.PI); // 10 is the radius of the circle
-        //     ctx.fillStyle = 'green';
-        //     ctx.fill();
-        //     ctx.closePath();
-        // }
     };
 
     const saveBoxes = (bbox, m_res, index) => {
@@ -147,7 +122,7 @@ function Result() {
                     "results": m_res
                 }
             }
-        })
+        });
     }
 
     const drawFace = (bbox, index, ctx) => {
@@ -161,6 +136,7 @@ function Result() {
         const scaledY = y_min / scaleY;
         const scaledWidth = (x_max - x_min) / scaleX;
         const scaledHeight = (y_max - y_min) / scaleY;
+
 
         if (hoverIndex !== -1 && hoverIndex === `${index}`) {
             ctx.beginPath();

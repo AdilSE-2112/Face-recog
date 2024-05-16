@@ -34,6 +34,7 @@ function Login() {
   };
 
   const handleLogin = async () => {
+    console.log("first")
     try {
         const response = await axios.post(
           'http://192.168.122.101:8000/api/v1/login/',
@@ -47,7 +48,6 @@ function Login() {
             // Handle successful login here, e.g., redirect to another page
             console.log(response.data);
             loginAction(response.data);
-            navigate("/"); // Redirect to "/" after successful login
         } else {
             setErrorDisplay(true);
             setErrorMessage('Failed to login. Please check your credentials.');

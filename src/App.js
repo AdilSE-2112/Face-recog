@@ -9,6 +9,7 @@ import SearchProvider from './context/searchContext';
 import Result from './pages/result';
 import Login from './components/login/login'
 import History from './pages/history/index'
+import PrivateRoute from './components/privateRoute';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         <AuthProvider>
           <SearchProvider>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<PrivateRoute Component={Home} />} />
               <Route path='/login' element={<Login />} />
               <Route path='/search/result' element={<Result />} />
               <Route path="/history" element={<History />} />

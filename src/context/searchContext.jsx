@@ -6,9 +6,11 @@ const SearchProvider = ({ children }) => {
     const [file, setFile] = useState(null);
     const [iin, setIIN] = useState(null);
 
+    const [lastRequest, setLastRequest] = useState(null);
+
     return (
         <SearchContext.Provider 
-            value={{ file, setFile, iin, setIIN }} 
+            value={{ file, setFile, iin, setIIN, lastRequest, setLastRequest }} 
         >
             {children}
         </SearchContext.Provider>

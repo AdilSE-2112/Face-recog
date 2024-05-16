@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const AuthContext = createContext()
 
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [auth_user_id, setAuth_user_id] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("jwtToken") || ""); 
 
     const navigate = useNavigate();
@@ -12,25 +12,33 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
         
+        if (token) {
+            setToken(token);
+            setAuth_user_id(localStorage.getItem('auth_user_id'));
+        }
     }, []);
 
     const loginAction = async (data) => {
         setToken(data.access);
+        setAuth_user_id(data.auth_user_id)
 
         localStorage.setItem("jwtToken", data.access);
         localStorage.setItem("auth_user_id", data.auth_user_id);
+
+        navigate('/');
     }
 
     const logOut = (data) => {
-        setUser(null);
         setToken("");
+        setAuth_user_id("");
         localStorage.removeItem("jwtToken");
+        localStorage.removeItem("auth_user_id");
         navigate("/login");
     }
 
     return (
         <AuthContext.Provider 
-            value={{ user, setUser, loginAction, logOut }} 
+            value={{ auth_user_id, setAuth_user_id, loginAction, logOut, token, setToken }} 
         >
             {children}
         </AuthContext.Provider>
