@@ -15,11 +15,8 @@ body {
 .history-page {
     height: 100%;
     width: 100%;
-
     overflow-x: hidden;
-
     box-sizing: border-box;
-    border: 1px solid red;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -32,7 +29,6 @@ body {
         flex-direction: column;
 
         @include mPadding;
-
         box-sizing: border-box;
 
         .prev-requests {
