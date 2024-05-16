@@ -117,6 +117,7 @@
         display: flex;
         flex-direction: row;
         gap: 100px;
+        
 
         .file-input {
             position: relative;
@@ -169,6 +170,9 @@
                     color: rgba($color: #7a7a7a, $alpha: 1);
                     font-size: 70px;
                 }
+                .check-icon {
+                    color: green;
+                  }
             }
         }
 

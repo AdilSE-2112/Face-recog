@@ -9,6 +9,7 @@ import SearchProvider from './context/searchContext';
 import Result from './pages/result';
 import Login from './components/login/login'
 import History from './pages/history/index'
+import Profile from './pages/profile/index'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path='/login' element={<Login />} />
               <Route path='/search/result' element={<Result />} />
               <Route path="/history" element={<History />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </SearchProvider>
         </AuthProvider>

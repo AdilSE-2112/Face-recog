@@ -6,6 +6,8 @@ import "./style.scss";
 import { HiDotsVertical } from "react-icons/hi";
 import mockPhoto from "../home/1000.jpg";
 import { MdRepeatOn } from "react-icons/md";
+
+
 const HistoryPage = () => {
   const searchContext = useSearch();
   const navigate = useNavigate();
