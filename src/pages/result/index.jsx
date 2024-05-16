@@ -166,6 +166,7 @@ function Result() {
         const mouseY = (event.clientY - rect.top);   // Adjust for scaling
         setMouseXpos(mouseX);
         setMouseYpos(mouseY);
+        
 
         let foundHoverIndex = -1;
 
