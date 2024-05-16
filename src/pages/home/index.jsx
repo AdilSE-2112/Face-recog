@@ -10,12 +10,18 @@ import { HiDotsVertical } from "react-icons/hi";
 import axios from 'axios';
 import { useAuth } from '../../context/authContext';
 
+import homePageMock from './mockData';
+import history_mock_1 from './history_mock_1.jpeg'
+import history_mock_2 from './history_mock_2.jpeg'
+import history_mock_3 from './history_mock_3.jpeg'
+import history_mock_4 from './history_mock_4.jpg'
+
 function Home() {
   const searchContext = useSearch();
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [iin, setIIN] = useState('');
-  const { auth_user_id, token } = useAuth();
+  const { auth_user_id, token, devMode } = useAuth();
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false); // Add state for searching
   const [history, setHistory] = useState(null);
@@ -51,24 +57,37 @@ function Home() {
   }
 
   useEffect(() => {
-    axios.post(
-      'http://192.168.122.101:8000/api/v1/getUserInfo/',
-      {
-        'auth_user_id': `${auth_user_id}` || `${localStorage.getItem('auth_user_id')}`
-      },
-      {
-        headers: {
-          'Authorization': 'Bearer ' + token
+    console.log(homePageMock.history);
+
+    if (!devMode) {
+      axios.post(
+        'http://192.168.122.101:8000/api/v1/getUserInfo/',
+        {
+          'auth_user_id': `${auth_user_id}` || `${localStorage.getItem('auth_user_id')}`
         },
-      }
-    ).then(res => {
-      setHistory(res.data.history);
-      console.log(res.data);
-      setLoading(false);
-    }).catch(error => {
-      console.log(error);
-    })
+        {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
+        }
+      ).then(res => {
+        setHistory(res.data.history);
+        console.log(res.data);
+        setLoading(false);
+      }).catch(error => {
+        console.log(error);
+      })
+      
+    } else {
+      devModeHome();
+    }
   }, [])
+
+  const devModeHome = async () => {
+    await new Promise(r => setTimeout(r, 2000));
+    setHistory(homePageMock.history);
+    setLoading(false);
+  }
 
   return (
     <Layout>
@@ -76,7 +95,7 @@ function Home() {
         <div className="container">
           <div className="recent-search">
             <div className="title">Недавние запросы</div>
-            <div className="cards">
+            <div className="cards ">
               {
                 !loading
                   ? (<>
@@ -84,9 +103,9 @@ function Home() {
                     <Search_Card history={history[1]} />
                     <Search_Card history={history[2]} />
                   </>) : (<>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                    <div><span>...Loading</span></div>
+                    <div><span>...Loading</span></div>
+                    <div><span>...Loading</span></div>
                   </>)
               }
             </div>
@@ -94,28 +113,26 @@ function Home() {
 
           <div className="search-input">
             <div className="file-input">
-              <>
-                <input
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  onChange={(e) => {
-                    console.log("File");
-                    setFile(e.target.files[0]);
-                  }}
-                />
-                <div>
-                  {file === null ? (
-                    <FiUpload className="icon" />
-                  ) : (
-                    <FaCheckCircle className="icon check-icon" />
-                  )}
-                  <p>
-                    {file === null
-                      ? "Загрузите или выберите изображение для поиска"
-                      : "Изображение выбрано "}
-                  </p>
-                </div>
-              </>
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                onChange={(e) => {
+                  console.log("File");
+                  setFile(e.target.files[0]);
+                }}
+              />
+              <div>
+                {file === null ? (
+                  <FiUpload className="icon" />
+                ) : (
+                  <FaCheckCircle className="icon check-icon" />
+                )}
+                <p>
+                  {file === null
+                    ? "Загрузите или выберите изображение для поиска"
+                    : "Изображение выбрано "}
+                </p>
+              </div>
             </div>
 
             <div className="iin-input">
@@ -158,10 +175,19 @@ const Search_Card = ({ history }) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
 
+  const { devMode } = useAuth();
+  const mockImages = [history_mock_1, history_mock_2, history_mock_3, history_mock_4];
+
   const PHOTO_URL = 'http://192.168.122.101:9000/history/';
 
   useEffect(() => {
-    setPhoto(`${PHOTO_URL}${history.searchedPhoto}`)
+    console.log(history);
+
+    if (devMode) {
+      setPhoto(mockImages[Math.floor(Math.random()*mockImages.length)]);
+    } else {
+      setPhoto(`${PHOTO_URL}${history.searchedPhoto}`)
+    }
 
     const _date = history.created_at.substring(0, 10);
     const [year, month, day] = _date.split('-');

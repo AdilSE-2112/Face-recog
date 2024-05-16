@@ -6,6 +6,7 @@ const AuthContext = createContext()
 const AuthProvider = ({ children }) => {
     const [auth_user_id, setAuth_user_id] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("jwtToken") || ""); 
+    const devMode = true;
 
     const navigate = useNavigate();
 
@@ -38,7 +39,7 @@ const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider 
-            value={{ auth_user_id, setAuth_user_id, loginAction, logOut, token, setToken }} 
+            value={{ auth_user_id, setAuth_user_id, loginAction, logOut, token, setToken, devMode }} 
         >
             {children}
         </AuthContext.Provider>
