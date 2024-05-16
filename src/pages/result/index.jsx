@@ -77,7 +77,7 @@ function Result() {
 
             redrawCanvas();
         }
-    }, [file, results, scaleX, scaleY, isLoading, currentSubjectIndex]);
+    }, [file, results, scaleX, scaleY, isLoading, currentSubjectIndex, mouseXpos]);
 
     const redrawCanvas = () => {
         if (ctx === null || isLoading || results === null) return;
@@ -209,6 +209,7 @@ function Result() {
             }
         }
 
+        setHoverIndex(-1);
         setCurrentSubjectIndex(foundSubjectIndex);
         redrawCanvas(); 
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Layout from "../../components/layout";
 import { useNavigate } from "react-router-dom";
 import "./style.scss";
@@ -15,6 +15,7 @@ import history_mock_1 from './history_mock_1.jpeg'
 import history_mock_2 from './history_mock_2.jpeg'
 import history_mock_3 from './history_mock_3.jpeg'
 import history_mock_4 from './history_mock_4.jpg'
+import mock from './mockResponse';
 
 function Home() {
   const searchContext = useSearch();
@@ -50,6 +51,11 @@ function Home() {
       }).catch((error) => {
         console.log(error);
         setSearching(false); // Set searching to false if an error occurs
+
+        if (devMode) {
+          searchContext.setLastRequest(mock);
+          navigate('/search/result');
+        }
       });
     }
 
@@ -147,7 +153,7 @@ function Home() {
                   {searching ? "Поиск..." : "Поиск"}
                 </button>
               </div>
-              <div>
+              {/* <div>
                 <div>
                   <p>Имя:</p>
                   <p>Маку</p>
@@ -160,7 +166,7 @@ function Home() {
                   <p>День рождение:</p>
                   <p>01.01.1990г</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -174,6 +180,7 @@ const Search_Card = ({ history }) => {
   const [photo, setPhoto] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const cardRef = useRef(null);
 
   const { devMode } = useAuth();
   const mockImages = [history_mock_1, history_mock_2, history_mock_3, history_mock_4];
@@ -184,36 +191,45 @@ const Search_Card = ({ history }) => {
     console.log(history);
 
     if (devMode) {
-      setPhoto(mockImages[Math.floor(Math.random()*mockImages.length)]);
+      setPhoto(mockImages[Math.floor(Math.random() * mockImages.length)]);
     } else {
-      setPhoto(`${PHOTO_URL}${history.searchedPhoto}`)
+      setPhoto(`${PHOTO_URL}${history.searchedPhoto}`);
     }
 
     const _date = history.created_at.substring(0, 10);
     const [year, month, day] = _date.split('-');
     setDate(`${day}.${month}.${year}г.`);
 
-    const _time = history.created_at.substring(history.created_at.indexOf('T'));
+    const _time = history.created_at.substring(history.created_at.indexOf('T') + 1);
     const [h, m, s] = _time.split(':');
     setTime(`${h}:${m}`);
-  }, [])
+  }, [history, devMode, mockImages]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cardRef.current && !cardRef.current.contains(event.target)) {
+        setInfoOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="card">
+    <div className="card" ref={cardRef}>
       <img src={photo} alt={date} />
       <div className="info-block">
-        <HiDotsVertical className='icon' onClick={(e) => setInfoOpen(prev => !prev)} />
-        {
-          infoOpen
-            ? (
-              <div className="info">
-                <div>Дата поиска: </div>
-                <div>{date}</div>
-                <div>{time}</div>
-              </div>
-            )
-            : null
-        }
+        <HiDotsVertical className="icon" onClick={() => setInfoOpen(prev => !prev)} />
+        {infoOpen && (
+          <div className="info">
+            <div>Дата поиска: </div>
+            <div>{date}</div>
+            <div>{time}</div>
+          </div>
+        )}
       </div>
     </div>
   );
