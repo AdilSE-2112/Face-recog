@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "../../context/searchContext";
 import Layout from "../../components/layout";
@@ -6,17 +6,46 @@ import "./style.scss";
 import { HiDotsVertical } from "react-icons/hi";
 import mockPhoto from "../home/1000.jpg";
 import { MdRepeatOn } from "react-icons/md";
+import axios from "axios";
+import { useAuth } from "../../context/authContext";
 
 
 const HistoryPage = () => {
   const searchContext = useSearch();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(true);
+  const { token, auth_user_id } = useAuth();
+  const [page, setPage] = useState(1);
+
   const handleRepeatSearch = (file, iin) => {
     searchContext.setFile(file);
     searchContext.setIIN(iin);
     navigate("/search/result");
   };
+
+  useEffect(() => {
+    console.log(auth_user_id, token);
+    const _auth_user_id = auth_user_id || localStorage.getItem('auth_user_id') || 2
+    
+    axios.get(
+      `http://192.168.122.101:8000/api/v1/account/history/${auth_user_id}`,
+      {
+        params: {
+          "page": page
+        }
+      },
+      {
+        headers: { 'Authorization': 'Bearer ' + token },
+      }
+    ).then(res => {
+      console.log(res);
+      setLoading(false);
+    }).catch(err => {
+      console.log(err);
+      setLoading(false);
+    })
+  }, [])
 
   return (
     <Layout>

@@ -11,18 +11,21 @@ import axios from 'axios';
 import { useAuth } from '../../context/authContext';
 
 import homePageMock from './mockData';
-import history_mock_1 from './history_mock_1.jpeg'
-import history_mock_2 from './history_mock_2.jpeg'
-import history_mock_3 from './history_mock_3.jpeg'
-import history_mock_4 from './history_mock_4.jpg'
+import history_mock_1 from './history_mock_1.jpeg';
+import history_mock_2 from './history_mock_2.jpeg';
+import history_mock_3 from './history_mock_3.jpeg';
+import history_mock_4 from './history_mock_4.jpg';
 import mock from './mockResponse';
+import getDateAndTime from './../../utils/getDateAndTime';
 
 function Home() {
   const searchContext = useSearch();
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [iin, setIIN] = useState('');
-  const { auth_user_id, token, devMode } = useAuth();
+
+  const { token, devMode } = useAuth();
+  const [authUserId, setAuthUserId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false); // Add state for searching
   const [history, setHistory] = useState(null);
@@ -36,7 +39,7 @@ function Home() {
       const data = new FormData();
       data.append('image', file);
       data.append('limit', 10);
-      data.append('auth_user_id', 2);
+      data.append('auth_user_id', authUserId);
 
       await axios.post(
         'http://192.168.122.101:8000/api/v1/search/',
@@ -58,36 +61,35 @@ function Home() {
         }
       });
     }
-
+ 
     search();
   }
 
   useEffect(() => {
-    console.log(homePageMock.history);
+    const storedAuthUserId = localStorage.getItem('auth_user_id');
+    console.log(storedAuthUserId);
+    setAuthUserId(storedAuthUserId);
+  }, []);
 
-    if (!devMode) {
-      axios.post(
-        'http://192.168.122.101:8000/api/v1/getUserInfo/',
-        {
-          'auth_user_id': `${auth_user_id}` || `${localStorage.getItem('auth_user_id')}`
-        },
-        {
-          headers: {
-            'Authorization': 'Bearer ' + token
-          },
-        }
-      ).then(res => {
-        setHistory(res.data.history);
-        console.log(res.data);
-        setLoading(false);
-      }).catch(error => {
-        console.log(error);
-      })
-      
-    } else {
-      devModeHome();
+  useEffect(() => {
+    if (authUserId) {
+      if (!devMode) {
+        axios.post(
+          'http://192.168.122.101:8000/api/v1/getUserInfo/',
+          { 'auth_user_id': authUserId },
+          { headers: { 'Authorization': 'Bearer ' + token } }
+        ).then(res => {
+          setHistory(res.data.history);
+          console.log(res.data);
+          setLoading(false);
+        }).catch(error => {
+          console.log(error);
+        });
+      } else {
+        devModeHome();
+      }
     }
-  }, [])
+  }, [authUserId, devMode, token]);
 
   const devModeHome = async () => {
     await new Promise(r => setTimeout(r, 2000));
@@ -101,7 +103,7 @@ function Home() {
         <div className="container">
           <div className="recent-search">
             <div className="title">Недавние запросы</div>
-            <div className="cards ">
+            <div className="cards">
               {
                 !loading
                   ? (<>
@@ -109,9 +111,9 @@ function Home() {
                     <Search_Card history={history[1]} />
                     <Search_Card history={history[2]} />
                   </>) : (<>
-                    <div><span>...Loading</span></div>
-                    <div><span>...Loading</span></div>
-                    <div><span>...Loading</span></div>
+                    <div><span>Загружаем...</span></div>
+                    <div><span>Загружаем...</span></div>
+                    <div><span>Загружаем...</span></div>
                   </>)
               }
             </div>
@@ -153,20 +155,6 @@ function Home() {
                   {searching ? "Поиск..." : "Поиск"}
                 </button>
               </div>
-              {/* <div>
-                <div>
-                  <p>Имя:</p>
-                  <p>Маку</p>
-                </div>
-                <div>
-                  <p>Фамилия:</p>
-                  <p>Куанышбеков</p>
-                </div>
-                <div>
-                  <p>День рождение:</p>
-                  <p>01.01.1990г</p>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
@@ -196,13 +184,11 @@ const Search_Card = ({ history }) => {
       setPhoto(`${PHOTO_URL}${history.searchedPhoto}`);
     }
 
-    const _date = history.created_at.substring(0, 10);
-    const [year, month, day] = _date.split('-');
-    setDate(`${day}.${month}.${year}г.`);
-
-    const _time = history.created_at.substring(history.created_at.indexOf('T') + 1);
-    const [h, m, s] = _time.split(':');
-    setTime(`${h}:${m}`);
+    const [_date, _time] = getDateAndTime(history.created_at);
+    // const _date = history.created_at.substring(0, 10);
+    // const [year, month, day] = _date.split('-');
+    setDate(_date);
+    setTime(_time);
   }, [history, devMode, mockImages]);
 
   useEffect(() => {

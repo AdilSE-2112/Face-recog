@@ -36,7 +36,7 @@ function Header() {
                 <div className="logo">
                     <Link to={'/'}>
                         <div className="inner">
-                            FaceRecognition
+                            eTanu
                         </div>
                     </Link>
                 </div>
@@ -45,13 +45,13 @@ function Header() {
                     <div>
                         <Link to={'/history'}>История запросов</Link>
                     </div>
-                    <div ref={userIconRef}>
+                    <div><Link to={'/profile'}>Профиль</Link></div>
+                    <div onClick={logOut}>Выйти</div>
+                    {/* <div ref={userIconRef}>
                         <FaUser size={20} onClick={() => setDropdownOpen(prev => !prev)} />
-                    </div>
-                    <div ref={dropdownRef} className={`profile-dropdown ${!dropdownOpen ? 'close' : ''}`}>
-                        <Link to={'/profile'}>Профиль</Link>
-                        <div onClick={logOut}>Выйти</div>
-                    </div>
+                    </div> */}
+                    {/* <div ref={dropdownRef} className={`profile-dropdown ${!dropdownOpen ? 'close' : ''}`}> */}
+                    {/* </div> */}
                 </div>
             </div>
         </div>
