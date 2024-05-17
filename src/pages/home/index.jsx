@@ -40,6 +40,7 @@ function Home() {
       data.append('image', file);
       data.append('limit', 10);
       data.append('auth_user_id', authUserId);
+      data.append('reload', 0);
 
       await axios.post(
         'http://192.168.122.101:8000/api/v1/search/',

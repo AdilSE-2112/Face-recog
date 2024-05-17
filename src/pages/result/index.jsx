@@ -43,8 +43,7 @@ function Result() {
     });
 
     useEffect(() => {
-
-        if (!file || !results) return;
+        if (!lastRequest) return;
         setLoading(false);
 
         const canvas = canvasRef.current;
@@ -52,7 +51,14 @@ function Result() {
         setCTX(ctx);
 
         const img = new Image();
-        img.src = URL.createObjectURL(file);
+
+        
+        if (lastRequest && lastRequest.image_name) {
+            img.src = `http://192.168.122.101:9000/history/${results.image_name}`
+        } else {
+            img.src = URL.createObjectURL(file);
+        }
+        
         setImage(img);
 
         img.onload = () => {

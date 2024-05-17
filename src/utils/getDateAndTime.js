@@ -5,7 +5,7 @@ const getDateAndTime = (dateStr) => {
     const _time = dateStr.substring(dateStr.indexOf('T') + 1);
     const [h, m, s] = _time.split(':');
 
-    return [_date, _time];
+    return [`${day}.${month}.${year}г`, `${h}:${m}`];
 }
 
 export default getDateAndTime;
