@@ -19,6 +19,12 @@
         display: flex;
         flex-direction: column;
 
+        @media (max-width: 750px) {
+            flex-direction: column-reverse;
+            gap: 20px;
+            height: max-content;
+        }
+
         @include mPadding;
 
         // border: 1px solid red;
@@ -164,7 +170,16 @@
         flex-direction: row;
         gap: 100px;
         
-        @media (max-width: 600px) {
+        @media (max-width: 750px) and ( min-width: 600px) {
+            padding-top: 30px;
+            gap: 50px;
+        }
+
+        @media (max-width: 700px) {
+            gap: 30px;
+        }
+
+        @media (max-width: 700px) {
             flex-direction: column;
             gap: 30px;
             align-items: center;
@@ -211,6 +226,7 @@
 
                 p {
                     font-size: 13px;
+                    text-align: center;
                 }
 
                 .icon {
@@ -236,17 +252,21 @@
             flex-direction: column;
             gap: 10px;
 
-            @media (max-width: 600px) {
+            @media (max-width: 700px) {
                 align-items: flex-start;
                 width: 100%;
+                // max-width: 100%;
             }
-
 
             > div:nth-child(1) {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 gap: 10px;
+
+                @media (max-width: 600px) {
+                    width: 100%;
+                }
 
                 input {
                     flex: 1;
