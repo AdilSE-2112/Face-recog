@@ -49,7 +49,7 @@ function Result() {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         setCTX(ctx);
-
+        
         const img = new Image();
 
         
