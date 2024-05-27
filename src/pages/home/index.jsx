@@ -102,23 +102,28 @@ function Home() {
     <Layout>
       <div className="home-page">
         <div className="container">
-          <div className="recent-search">
-            <div className="title">Недавние запросы</div>
-            <div className="cards">
-              {
-                !loading
-                  ? (<>
-                    <Search_Card history={history[0]} />
-                    <Search_Card history={history[1]} />
-                    <Search_Card history={history[2]} />
-                  </>) : (<>
-                    <div><span>Загружаем...</span></div>
-                    <div><span>Загружаем...</span></div>
-                    <div><span>Загружаем...</span></div>
-                  </>)
-              }
-            </div>
-          </div>
+          {
+            history && history.length > 0
+              ? (
+                <div className="recent-search">
+                  <div className="title">Недавние запросы</div>
+                  <div className="cards">
+                    {
+                      !loading
+                        ? (<>
+                          <Search_Card history={history[0]} />
+                          <Search_Card history={history[1]} />
+                          <Search_Card history={history[2]} />
+                        </>) : (<>
+                          <div><span>Загружаем...</span></div>
+                          <div><span>Загружаем...</span></div>
+                          <div><span>Загружаем...</span></div>
+                        </>)
+                    }
+                  </div>
+                </div>
+              ) : null
+          }
 
           <div className="search-input">
             <div className="file-input">
@@ -126,10 +131,14 @@ function Home() {
                 type="file"
                 accept="image/png, image/jpeg"
                 onChange={(e) => {
-                  console.log("File");
-                  setFile(e.target.files[0]);
+                  if (e.target.files.length > 0) setFile(e.target.files[0]);
                 }}
               />
+              {
+                file !== null ? 
+                  <div className="image"><img src={URL.createObjectURL(file)} alt="" /></div> 
+                  : null
+              }
               <div>
                 {file === null ? (
                   <FiUpload className="icon" />
@@ -165,6 +174,8 @@ function Home() {
 }
 
 const Search_Card = ({ history }) => {
+
+
   const [infoOpen, setInfoOpen] = useState(false);
   const [photo, setPhoto] = useState('');
   const [date, setDate] = useState('');
@@ -176,20 +187,22 @@ const Search_Card = ({ history }) => {
 
   const PHOTO_URL = 'http://192.168.122.101:9000/history/';
 
+
   useEffect(() => {
     console.log(history);
 
     if (devMode) {
       setPhoto(mockImages[Math.floor(Math.random() * mockImages.length)]);
-    } else {
+    } else if (history !== undefined) {
       setPhoto(`${PHOTO_URL}${history.searchedPhoto}`);
     }
 
-    const [_date, _time] = getDateAndTime(history.created_at);
-    // const _date = history.created_at.substring(0, 10);
-    // const [year, month, day] = _date.split('-');
-    setDate(_date);
-    setTime(_time);
+    if (history !== undefined) {
+      const [_date, _time] = getDateAndTime(history.created_at);
+      setDate(_date);
+      setTime(_time);
+    }
+
   }, [history, devMode, mockImages]);
 
   useEffect(() => {
@@ -205,11 +218,16 @@ const Search_Card = ({ history }) => {
     };
   }, []);
 
+  if (history === undefined) return null;
+
   return (
     <div className="card" ref={cardRef}>
-      <img src={photo} alt={date} />
+      <img src={photo} alt={date} />0
       <div className="info-block">
-        <HiDotsVertical className="icon" onClick={() => setInfoOpen(prev => !prev)} />
+        <HiDotsVertical className="icon" 
+          onMouseEnter={() => setInfoOpen(true)} 
+          onMouseLeave={() => setInfoOpen(false)}
+        />
         {infoOpen && (
           <div className="info">
             <div>Дата поиска: </div>
